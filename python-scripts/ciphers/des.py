@@ -101,12 +101,12 @@ class DesCipher(Cipher):
         # msg_bits = msg
         # key_bits = key
         key_rounds = cls.compression_permutation(key_bits)
-        print(f'Message: {msg_bits}')
-        print(f'IP: {cls._ip(msg_bits)}')
+        # print(f'Message: {msg_bits}')
+        # print(f'IP: {cls._ip(msg_bits)}')
         l,r = cls._cut_text(cls._ip(msg_bits))
         
         for i in range(16):
-            print(f'L{i} = {l} / R{i} = {r}')
+            # print(f'L{i} = {l} / R{i} = {r}')
             newl = r
             r = cls.encryption_round(l,r,key_rounds[i])
             l = newl
