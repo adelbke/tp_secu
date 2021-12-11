@@ -17,7 +17,7 @@
     "
   >
     <label
-      class="block mb-2 capitalize text-xl tracking-tighter font-press-start"
+      class="block-title text-xl font-bold"
       >Encrypted</label
     >
     <div class="p-2 bg-blue-900 shadow-inner m-1 rounded">

@@ -2,7 +2,10 @@ const state = {
   key: null,
   algorithm: '',
   message: '',
-  crypt: ''
+  crypt: '',
+  hosts: [],
+  p2pServer: false,
+  receivedMessages: []
 }
 
 const getters = {
@@ -16,13 +19,6 @@ const getters = {
     return state.algorithm
   },
   getCrypt: state => {
-    // if (
-    //   (state.key !== null || state.key.toString() !== '') &&
-    //   (state.algorithm !== null || state.algorithm !== '') &&
-    //   (state.message !== null || state.message !== '')
-    // ) {
-    //   return state.crypt
-    // }
     return state.crypt
   }
 }
@@ -39,6 +35,12 @@ const mutations = {
   },
   SET_CRYPT (state, crypt) {
     state.crypt = crypt
+  },
+  SET_P2PSERVER (state, server) {
+    state.p2pServer = server
+  },
+  ADD_MESSAGE (state, msg) {
+    state.receivedMessages.push(msg)
   }
 }
 
@@ -99,6 +101,20 @@ const actions = {
       // console.log(message)
       commit('SET_CRYPT', message)
     })
+  },
+
+  startServer ({state, commit}) {
+    // rest Server Setup
+    const { spawn } = require('child_process')
+    const path = require('path')
+    const restServer = spawn('node', [path.join(__dirname, './server/app.js')])
+
+    restServer.stdout.on('message', (data) => {
+      console.log('restServer says: ', data)
+    })
+  },
+  pushMessage ({ commit }, message) {
+    commit('ADD_MESSAGE', message)
   }
 }
 

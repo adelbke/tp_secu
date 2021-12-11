@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="bg-gray-900">
     <navbar></navbar>
     <router-view></router-view>
     <!-- <index></index> -->
@@ -29,5 +29,8 @@ export default {
 
 .button-main {
   @apply bg-blue-900 shadow rounded font-mono p-2 
+}
+.block-title{
+  @apply block mb-2 capitalize tracking-tighter font-mono
 }
 </style>

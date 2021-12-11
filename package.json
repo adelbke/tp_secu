@@ -53,6 +53,7 @@
     }
   },
   "dependencies": {
+    "arpscan": "^1.0.2",
     "postcss-loader": "^4.2.0",
     "python-shell": "^3.0.1",
     "sass-loader": "^10.1.1",

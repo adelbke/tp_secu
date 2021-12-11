@@ -16,8 +16,8 @@
       p-4
     "
   >
-    <div>
-      <label class="block mb-2 capitalize text-xl font-press-start">Message</label>
+    <label class="block-title text-xl font-bold">Message</label>
+    <div class="p-2">
       <textarea
         class="
           resize-none
