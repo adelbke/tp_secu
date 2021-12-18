@@ -10,7 +10,16 @@
         <message-input class="m-2"></message-input>
       </div>
       <div class="w-full lg:w-1/3">
-        <algorithm-input class="m-2"></algorithm-input>
+        <algorithm-input
+          class="
+            m-2
+            transition-transform
+            duration-100
+            ease-in
+            transform
+            hover:scale-105
+          "
+        ></algorithm-input>
       </div>
       <div class="w-full lg:w-1/3">
         <crypt-output class="m-2"></crypt-output>

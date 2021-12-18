@@ -1,24 +1,8 @@
 <template>
-  <div
-    class="
-      grid grid-cols-1
-      gap-4
-      bg-blue-800
-      rounded
-      shadow-special
-      border-blue-800
-      text-gray-200
-      p-4
-    "
-  >
-    <label
-      class="block-title text-xl font-bold"
-      >algorithm</label
-    >
-
+  <div>
     <select
       v-model="selectedAlgorithm"
-      class="bg-blue-900 p-2 font-mono outline-none rouneded border-indigo-900"
+      class="bg-blue-900 p-2 font-mono outline-none rounded border-indigo-900"
     >
       <option selected disabled value="" class="text-gray-600">
         Please select an Algorithm
@@ -31,26 +15,10 @@
       ></option>
     </select>
     <component v-bind:is="algorithmComponent" v-model="cryptKey"></component>
-    <div class="flex flex-row justify-end">
-      <button
-        v-if="selectedAlgorithm != 'transposition'"
-        class="button-main mr-2"
-        @click="decrypt()"
-      >
-        Decrypt
-      </button>
-      <button
-        class="button-main"
-        @click="encrypt()"
-      >
-        Encrypt
-      </button>
-    </div>
   </div>
 </template>
 
 <script>
-
 import ceasarCipherInput from '../ciphers/ceasar-cipher-input.vue'
 import vigenereCipherInput from '../ciphers/vigenere-cipher-input.vue'
 import substitutionCipherInput from '../ciphers/substitution-cipher-input.vue'
@@ -76,14 +44,6 @@ export default {
           component: ceasarCipherInput
         }
       ]
-    }
-  },
-  methods: {
-    encrypt () {
-      this.$store.dispatch('crypt/encrypt')
-    },
-    decrypt () {
-      this.$store.dispatch('crypt/decrypt')
     }
   },
   computed: {

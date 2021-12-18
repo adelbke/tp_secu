@@ -1,32 +1,11 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
-import '../renderer/store'
+// import { lstat } from 'fs'
+import store from '../renderer/store'
 
 // Event Handler for starting python scripts
 // const { ipcMain } = require('electron')
-
-// ipcMain.on('python-call', (event, { scriptArgs }) => {
-//   let { PythonShell } = require('python-shell')
-//   let path = require('path')
-//   let options = {
-//     pythonOptions: ['-u'],
-//     pythonPath: '/usr/bin/python3.9',
-//     scriptPath: path.join(__dirname, '../../python-scripts/'),
-//     args: scriptArgs
-//   }
-//   let pyshell = new PythonShell('main.py', options)
-
-//   pyshell.on('stderr', function (stderr) {
-//     console.log('tkheltet')
-//     console.log(stderr)
-//   })
-//   pyshell.on('message', function (message) {
-//     console.log('tkheltet2')
-//     console.log(message)
-//   // commit('SET_CRYPT', message)
-//   })
-// })
 
 /**
  * Set `__static` path to static files in production
@@ -53,7 +32,27 @@ function createWindow () {
 
   mainWindow.loadURL(winURL)
 
+  // rest Server Setup
+  const { spawn } = require('child_process')
+  const path = require('path')
+  const restServer = spawn('node', [path.join(__dirname, './server/app.js')])
+
+  restServer.stdout.on('data', (data) => {
+    let dataString = data.toString()
+    try {
+      let dataObject = JSON.parse(dataString)
+      store.dispatch('crypt/pushMessage', dataObject)
+    } catch (error) {
+      console.log('restServer says: ' + dataString)
+    }
+  })
+
+  restServer.stdout.on('close', (data) => {
+    console.log('restServer says: byebye ' + data)
+  })
+
   mainWindow.on('closed', () => {
+    restServer.kill(0)
     mainWindow = null
   })
 }

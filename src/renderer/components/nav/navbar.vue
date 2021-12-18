@@ -11,37 +11,30 @@
       px-4
     "
   >
-    <h2 class="py-2 text-3xl font-press-start">DecryptorEncryptor</h2>
-    <!-- <div>
+    <h2 class="py-2 text-2xl font-press-start">DecryptorEncryptor</h2>
+    <div class="flex flex-row">
       <router-link
         class="
-          bg-blue-900
+          button-main
           text-lg
-          shadow
-          rounded
-          font-mono
-          p-2 mr-2
+          mr-2
           focus:outline-none
         "
         to="/encrypt"
       >
-        Encrypt
+        Cryptage
       </router-link>
       <router-link
         class="
-          bg-blue-900
+          button-main
           text-lg
-          shadow
-          rounded
-          font-mono
-          p-2
           focus:outline-none
         "
-        to="/decrypt"
+        to="/comms"
       >
-        Decrypt
+        Communications
       </router-link>
-    </div> -->
+    </div>
   </div>
 </template>
 
