@@ -26,4 +26,7 @@ export default {
 .block-title {
   @apply block mb-2 capitalize tracking-tighter font-mono;
 }
+.block-title{
+  @apply block mb-2 capitalize tracking-tighter font-mono
+}
 </style>
