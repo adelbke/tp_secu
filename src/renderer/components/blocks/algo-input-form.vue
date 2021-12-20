@@ -43,7 +43,17 @@ export default {
           name: 'transposition',
           component: ceasarCipherInput
         }
-      ]
+      ],
+      selectedCipher: '',
+      enteredKey: ''
+    }
+  },
+  props: {
+    initAlgoKeyData: {
+      type: Object,
+      default: function () {
+        return {}
+      }
     }
   },
   computed: {
@@ -56,18 +66,28 @@ export default {
     },
     selectedAlgorithm: {
       get () {
-        return this.$store.getters['crypt/getAlgorithm']
+        return this.selectedCipher
       },
       set (value) {
-        this.$store.dispatch('crypt/setAlgorithm', value)
+        let vm = this
+        vm.selectedCipher = value
+        vm.$emit('input', {
+          cryptKey: vm.cryptKey,
+          algorithm: vm.selectedAlgorithm
+        })
       }
     },
     cryptKey: {
       get () {
-        return this.$store.getters['crypt/getKey']
+        return this.enteredKey
       },
       set (value) {
-        this.$store.dispatch('crypt/setKey', value)
+        let vm = this
+        vm.enteredKey = value
+        vm.$emit('input', {
+          cryptKey: vm.cryptKey,
+          algorithm: vm.selectedAlgorithm
+        })
       }
     }
   }

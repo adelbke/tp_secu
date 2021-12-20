@@ -52,6 +52,7 @@ function createWindow () {
   })
 
   mainWindow.on('closed', () => {
+    store.dispatch('crypt/resetState')
     restServer.kill(0)
     mainWindow = null
   })

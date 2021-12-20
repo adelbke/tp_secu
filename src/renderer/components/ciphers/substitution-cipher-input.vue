@@ -53,6 +53,9 @@ export default {
       cipherAlphabet: 'abcdefghijklmnopqrstuvwxyz'
     }
   },
+  mounted () {
+    this.$emit('input', this.outputKey)
+  },
   computed: {
     outputKey () {
       return this.plainAlphabet + ' ' + this.cipherAlphabet

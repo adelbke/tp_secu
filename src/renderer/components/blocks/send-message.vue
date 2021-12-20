@@ -1,9 +1,9 @@
 <template>
-  <div class="m-1 p-2 bg-blue-800 rounded shadow">
-    <h2 class="text-center text-xl font-mono text-gray-300 pb-2">
+  <div class="">
+    <h2 class="text-center text-xl font-mono font-bold text-gray-300 pb-2">
       Send a Message
     </h2>
-    <div class="grid grid-cols-1 gap-4" method="post">
+    <div class=" m-1 p-2 bg-blue-800 rounded shadow-special grid grid-cols-1 gap-4" method="post">
       <div>
         <label class="block" for="">Select a Recipient:</label>
         <div class="flex flex-row">
@@ -36,8 +36,8 @@
         </div>
       </div>
       <div>
-        <label>Select  a cipher:</label>
-        <algo-input-form></algo-input-form>
+        <label>Select a cipher:</label>
+        <algo-input-form v-model="algoKey"></algo-input-form>
       </div>
       <div>
         <label class="block">Enter a message:</label>
@@ -67,10 +67,7 @@
 <script>
 import refreshIcon from '../icons/refresh.vue'
 import algoInputForm from './algo-input-form.vue'
-
-// import ceasarCipherInput from '../ciphers/ceasar-cipher-input.vue'
-// import vigenereCipherInput from '../ciphers/vigenere-cipher-input.vue'
-// import substitutionCipherInput from '../ciphers/substitution-cipher-input.vue'
+import axios from 'axios'
 export default {
   components: {
     refreshIcon,
@@ -79,12 +76,37 @@ export default {
   methods: {
     refresh () {
       // do something
+    },
+    async sendMessage () {
+      let vm = this
+      let { algorithm, cryptKey } = vm.algoKeyData
+      await axios.post('http://localhost:3000/encrypt', {
+        sender: 'adel',
+        algorithm: algorithm,
+        message: vm.message,
+        key: cryptKey,
+        type: 'encrypt'
+      })
     }
   },
   data () {
     return {
-      hosts: [{ ip: '192.168.1.1', mac: 'AC:CF:23:31:9B:FC', name: 'adel' }],
-      message: ''
+      hosts: [
+        { ip: '192.168.1.1', mac: 'AC:CF:23:31:9B:FC', name: 'localhost' }
+      ],
+      message: '',
+      algoKeyData: {}
+    }
+  },
+  computed: {
+    algoKey: {
+      get () {
+        return this.algoKeyData
+      },
+      set (value) {
+        this.algoKeyData = value
+        console.log(value)
+      }
     }
   }
 }

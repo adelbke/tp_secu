@@ -24,6 +24,18 @@ const getters = {
 }
 
 const mutations = {
+  RESET_STATE (state) {
+    const initial = {
+      key: null,
+      algorithm: '',
+      message: '',
+      crypt: '',
+      hosts: [],
+      p2pServer: false,
+      receivedMessages: []
+    }
+    Object.keys(initial).forEach(key => { state[key] = initial[key] })
+  },
   SET_KEY (state, key) {
     state.key = key
   },
@@ -115,6 +127,9 @@ const actions = {
   },
   pushMessage ({ commit }, message) {
     commit('ADD_MESSAGE', message)
+  },
+  resetState ({ commit }) {
+    commit('RESET_STATE')
   }
 }
 
