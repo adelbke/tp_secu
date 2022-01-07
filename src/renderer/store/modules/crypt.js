@@ -12,6 +12,13 @@ const getters = {
   getMessage: state => {
     return state.message
   },
+  getHosts: state => {
+    return state.hosts
+  },
+  cryptable: state => {
+    let { key, algorithm, message } = state
+    return !!key && !!algorithm && !!message
+  },
   getKey: state => {
     return state.key
   },
@@ -20,7 +27,8 @@ const getters = {
   },
   getCrypt: state => {
     return state.crypt
-  }
+  },
+  getQuickResponse: state => state.quickResponse
 }
 
 const mutations = {
@@ -43,21 +51,27 @@ const mutations = {
     state.message = message
   },
   SET_ALGORITHM (state, algorithm) {
-    state.algorithm = algorithm
+    if (state.algorithm !== algorithm) {
+      state.key = null
+      state.algorithm = algorithm
+    }
   },
   SET_CRYPT (state, crypt) {
     state.crypt = crypt
   },
-  SET_P2PSERVER (state, server) {
-    state.p2pServer = server
-  },
   ADD_MESSAGE (state, msg) {
     state.receivedMessages.push(msg)
+  },
+  SET_HOSTS (state, hosts) {
+    state.hosts = hosts
+  },
+  set_quickResponse (state, quickResponse) {
+    state.quickResponse = quickResponse
   }
 }
 
 const actions = {
-  setMessage ({ commit }, message) {
+  setMessage ({ commit, dispatch, getters }, message) {
     commit('SET_MESSAGE', message)
   },
   setKey ({ commit }, key) {
@@ -66,6 +80,9 @@ const actions = {
   setAlgorithm ({ commit }, algorithm) {
     commit('SET_ALGORITHM', algorithm)
   },
+  // quickEncrypt({commit}, { key, algorithm,  }){
+
+  // }
   encrypt ({ state, commit }) {
     let { PythonShell } = require('python-shell')
     let path = require('path')
@@ -115,18 +132,11 @@ const actions = {
     })
   },
 
-  startServer ({state, commit}) {
-    // rest Server Setup
-    const { spawn } = require('child_process')
-    const path = require('path')
-    const restServer = spawn('node', [path.join(__dirname, './server/app.js')])
-
-    restServer.stdout.on('message', (data) => {
-      console.log('restServer says: ', data)
-    })
-  },
   pushMessage ({ commit }, message) {
     commit('ADD_MESSAGE', message)
+  },
+  setHosts ({ commit }, hosts) {
+    commit('SET_HOSTS', hosts)
   },
   resetState ({ commit }) {
     commit('RESET_STATE')

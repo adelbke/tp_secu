@@ -30,25 +30,42 @@ function createWindow () {
     width: 1000
   })
 
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+    (details, callbacks) => {
+      callbacks({
+        requestHeaders: { 'origin': '*', ...details.requestHeaders }
+      })
+    }
+  )
+
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callbacks) => {
+    callbacks({
+      responseHeaders: {
+        'Access-Control-Allow-Origin': ['*'],
+        ...details.responseHeaders
+      }
+    })
+  })
+
   mainWindow.loadURL(winURL)
 
   // rest Server Setup
-  const { spawn } = require('child_process')
+  const { fork } = require('child_process')
   const path = require('path')
-  const restServer = spawn('node', [path.join(__dirname, './server/app.js')])
+  // const restServer = spawn('node', [path.join(__dirname, './server/app.js')], { detached: false })
+  const restServer = fork(path.join(__dirname, './server/app.js'))
 
-  restServer.stdout.on('data', (data) => {
-    let dataString = data.toString()
-    try {
-      let dataObject = JSON.parse(dataString)
-      store.dispatch('crypt/pushMessage', dataObject)
-    } catch (error) {
-      console.log('restServer says: ' + dataString)
+  restServer.on('message', (message) => {
+    if (typeof message === 'object') {
+      if ('peerMessage' in message) {
+        let { peerMessage } = message
+        store.dispatch('crypt/pushMessage', peerMessage)
+      }
+      if ('peers' in message) {
+        let { peers } = message
+        store.dispatch('crypt/setHosts', peers)
+      }
     }
-  })
-
-  restServer.stdout.on('close', (data) => {
-    console.log('restServer says: byebye ' + data)
   })
 
   mainWindow.on('closed', () => {

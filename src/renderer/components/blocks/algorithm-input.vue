@@ -11,10 +11,7 @@
       p-4
     "
   >
-    <label
-      class="block-title text-xl font-bold"
-      >algorithm</label
-    >
+    <label class="block-title text-xl font-bold">algorithm</label>
 
     <select
       v-model="selectedAlgorithm"
@@ -39,18 +36,12 @@
       >
         Decrypt
       </button>
-      <button
-        class="button-main"
-        @click="encrypt()"
-      >
-        Encrypt
-      </button>
+      <button class="button-main" @click="encrypt()">Encrypt</button>
     </div>
   </div>
 </template>
 
 <script>
-
 import ceasarCipherInput from '../ciphers/ceasar-cipher-input.vue'
 import vigenereCipherInput from '../ciphers/vigenere-cipher-input.vue'
 import substitutionCipherInput from '../ciphers/substitution-cipher-input.vue'
@@ -96,7 +87,10 @@ export default {
     },
     selectedAlgorithm: {
       get () {
-        return this.$store.getters['crypt/getAlgorithm']
+        let algo = this.$store.getters['crypt/getAlgorithm']
+        return this.ciphers.findIndex((x) => x.name === algo) === -1
+          ? 'ceasar'
+          : algo
       },
       set (value) {
         this.$store.dispatch('crypt/setAlgorithm', value)

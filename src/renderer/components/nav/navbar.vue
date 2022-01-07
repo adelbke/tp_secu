@@ -28,6 +28,17 @@
         class="
           button-main
           text-lg
+          mr-2
+          focus:outline-none
+        "
+        to="/crack-vigenere"
+      >
+        Vigenere Crack
+      </router-link>
+      <router-link
+        class="
+          button-main
+          text-lg
           focus:outline-none
         "
         to="/comms"

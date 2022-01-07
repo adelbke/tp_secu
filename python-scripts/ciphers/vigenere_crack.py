@@ -1,5 +1,7 @@
 
-from ..ciphers.vigenere import VigenereCipher
+from ciphers.vigenere import VigenereCipher
+from itertools import product
+
 
 class AlphabetFrequency:
 
@@ -73,14 +75,14 @@ class AlphabetFrequency:
   def shiftLeft(self):
     self.shift('left')
   
-  def best_match_shift(self, secondAlphabet):
+  def best_match_shift(self, secondAlphabet, matches_count=5):
     scores = []
     for i in range(self.length):
       scores.append(self._compare(secondAlphabet))
       self.shiftLeft()
     shift_scores = [(i, scores[i]) for i in range(len(scores))]
     output = sorted(shift_scores, key= lambda x: x[1], reverse=True)
-    return output[:10]
+    return output[:matches_count]
 
   def _compare(self, secondAlphabet):
     proximity = 0
@@ -111,28 +113,37 @@ def getMostFrequent(letters:list):
     sorted_x = sorted(counts.items(), key=lambda kv: kv[0])
     return list(sorted_x)
 
-encrypted_message= 'kjh hukfy visgovf nkjh julf urxclokvgk us poxshkis ubvq otv qfk us wxpdngxs jkkwnk'
-encrypted_message = ''.join(encrypted_message.split(' '))
-key_length= 4
 
-lettersList = groupSameShift(encrypted_message,key_length)
-frequencyOrders = [getMostFrequent(x) for x in lettersList]
+def crack_vigenere(crypt, key_length, user_limit=81):
 
-key_possibilities = []
-for order in frequencyOrders:
-  french = AlphabetFrequency(classic=True)
-  case = AlphabetFrequency(order)
-  key_chars = [chr(ord('a') + x[0]) for x in case.best_match_shift(french)]
-  key_possibilities.append(key_chars)
+  crypt= 'kjh hukfy visgovf nkjh julf urxclokvgk us poxshkis ubvq otv qfk us wxpdngxs jkkwnk'
+  encrypted_message = ''.join(crypt.split(' '))
 
-# key_possibilities
+  lettersList = groupSameShift(encrypted_message,key_length)
+  frequencyOrders = [getMostFrequent(x) for x in lettersList]
+
+  max_chars = int((user_limit + 1)**(1/key_length))
+  key_possibilities = []
+  for order in frequencyOrders:
+    french = AlphabetFrequency(classic=True)
+    case = AlphabetFrequency(order)
+    key_chars = [chr(ord('a') + x[0]) for x in case.best_match_shift(french, matches_count=max_chars)]
+    key_possibilities.append(key_chars)
+
+  # print(key_possibilities)
+  # return
+  possible_keys = []
+  iteration = product(*tuple(key_possibilities))
+  probable_key = next(iteration, None)
+  i = 0
+  while i < user_limit and probable_key is not None:
+    key = ''.join(probable_key)
+    possible_keys.append({ "msg": VigenereCipher.decrypt(crypt, key), "key": key})
+    # possible_keys.append({ "key": key})
+    probable_key = next(iteration, None)
+    i+=1
+  
+  return possible_keys
 
 
-possible_keys = []
-for i in range(10):
-  possible_keys.append([key_possibilities[j][i] for j in range(key_length)])
-
-possible_keys = [''.join(x) for x in possible_keys]
-
-for key in possible_keys:
-    print(VigenereCipher.decrypt(encrypted_message, key))
+# print(crack_vigenere('kjh hukfy visgovf nkjh julf urxclokvgk us poxshkis ubvq otv qfk us wxpdngxs jkkwnk', 4, 18))

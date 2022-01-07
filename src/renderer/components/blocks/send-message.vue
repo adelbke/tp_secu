@@ -3,11 +3,15 @@
     <h2 class="text-center text-xl font-mono font-bold text-gray-300 pb-2">
       Send a Message
     </h2>
-    <div class=" m-1 p-2 bg-blue-800 rounded shadow-special grid grid-cols-1 gap-4" method="post">
+    <div
+      class="m-1 p-2 bg-blue-800 rounded shadow-special grid grid-cols-1 gap-4"
+      method="post"
+    >
       <div>
         <label class="block" for="">Select a Recipient:</label>
         <div class="flex flex-row">
           <select
+            v-model="selectedHost"  
             class="
               bg-blue-900
               p-2
@@ -19,14 +23,18 @@
               border-indigo-900
             "
           >
-            <option selected disabled value="" class="text-gray-500 text-lg">
+            <option
+              selected
+              disabled
+              class="text-gray-500 text-lg"
+            >
               Please select a Recipient
             </option>
             <option
               class="text-white"
               v-for="host in hosts"
               :key="host.name"
-              :value="host.name"
+              :value="host"
               v-text="`${host.name} - ${host.ip}`"
             ></option>
           </select>
@@ -80,10 +88,16 @@ export default {
     async sendMessage () {
       let vm = this
       let { algorithm, cryptKey } = vm.algoKeyData
-      await axios.post('http://localhost:3000/encrypt', {
+
+      // this.$store.dispatch('crypt/setKey', cryptKey)
+      // this.$store.dispatch('crypt/setAlgorithm', algorithm)
+      // this.$store.dispatch('crypt/setMessage', vm.message)
+      // this.$store.dispatch('crypt/encrypt')
+
+      await axios.post('http://' + this.selectedHost.ip + ':3000/encrypt', {
         sender: 'adel',
         algorithm: algorithm,
-        message: vm.message,
+        message: this.$store.getters['crypt/getCrypt'],
         key: cryptKey,
         type: 'encrypt'
       })
@@ -91,21 +105,24 @@ export default {
   },
   data () {
     return {
-      hosts: [
-        { ip: '192.168.1.1', mac: 'AC:CF:23:31:9B:FC', name: 'localhost' }
-      ],
+      // hosts: [
+      //   { ip: '192.168.1.1', mac: 'AC:CF:23:31:9B:FC', name: 'localhost' }
+      // ],
+      selectedHost: {},
       message: '',
       algoKeyData: {}
     }
   },
   computed: {
+    hosts () {
+      return this.$store.getters['crypt/getHosts']
+    },
     algoKey: {
       get () {
         return this.algoKeyData
       },
       set (value) {
         this.algoKeyData = value
-        console.log(value)
       }
     }
   }

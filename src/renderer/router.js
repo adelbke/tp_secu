@@ -4,12 +4,14 @@ import VueRouter from 'vue-router'
 // import route components
 import encrypt from './pages/encrypt.vue'
 import decrypt from './pages/decrypt.vue'
+import crackVigenere from './pages/crack-vigenere.vue'
 import comms from './pages/comms.vue'
 Vue.use(VueRouter)
 
 const routes = [
   { path: '/encrypt', component: encrypt },
   { path: '/decrypt', component: decrypt },
+  { path: '/crack-vigenere', component: crackVigenere },
   { path: '/comms', component: comms },
   { path: '*', component: encrypt }
 

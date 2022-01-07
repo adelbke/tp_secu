@@ -16,13 +16,19 @@
       p-4
     "
   >
-    <label
-      class="block-title text-xl font-bold"
-      >Encrypted</label
-    >
-    <div class="p-2 bg-blue-900 shadow-inner m-1 rounded">
-      <pre class="whitespace-pre-line">{{ cryptOutput }}</pre>
-    </div>
+    <label class="block-title text-xl font-bold">Encrypted</label>
+    <pre
+      class="
+        p-2
+        bg-blue-900
+        shadow-inner
+        m-1
+        rounded
+        whitespace-pre-wrap
+        break-words
+      "
+      v-text="!!cryptOutput ? cryptOutput : '\n'"
+    ></pre>
     <div class="flex justify-end">
       <button @click="copyToClipboard" class="button-main">
         Copy to Clipboard
@@ -35,9 +41,10 @@
 export default {
   computed: {
     cryptOutput () {
-      return this.$store.getters['crypt/getCrypt']
+      return this.output ? this.output : this.$store.getters['crypt/getCrypt']
     }
   },
+  props: ['output'],
   methods: {
     copyToClipboard () {
       let vm = this
