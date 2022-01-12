@@ -33,7 +33,11 @@ function createWindow () {
   mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callbacks) => {
       callbacks({
-        requestHeaders: { 'origin': '*', ...details.requestHeaders }
+        requestHeaders: {
+          'origin': '*',
+          'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+          ...details.requestHeaders
+        }
       })
     }
   )
@@ -42,6 +46,7 @@ function createWindow () {
     callbacks({
       responseHeaders: {
         'Access-Control-Allow-Origin': ['*'],
+        'Access-Control-Allow-Headers': ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
         ...details.responseHeaders
       }
     })

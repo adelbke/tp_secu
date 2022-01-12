@@ -101,7 +101,8 @@ export default {
         return this.$store.getters['crypt/getKey']
       },
       set (value) {
-        this.$store.dispatch('crypt/setKey', value)
+        console.log(value)
+        this.$store.dispatch('crypt/setKey', value.toString())
       }
     }
   }

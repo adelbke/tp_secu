@@ -89,7 +89,7 @@ if first == 'decrypt':
     elif algorithm == 'crack_vigenere':
         from ciphers.vigenere_crack import crack_vigenere
         key_length, user_limit = key.split(' ')
-        result = crack_vigenere(crypt, int(key_length), int(user_limit))
+        result = crack_vigenere(crypt, int(key_length), user_limit=int(user_limit))
         import json
         print(json.dumps(result))
         sys.stdout.flush()

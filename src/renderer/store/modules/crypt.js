@@ -1,3 +1,28 @@
+import axios from 'axios'
+
+function callPython ({ algorithm, message, key, type, callback }) {
+  let { PythonShell } = require('python-shell')
+  let path = require('path')
+  let options = {
+    pythonOptions: ['-u'],
+    pythonPath: '/usr/bin/python3.9',
+    scriptPath: path.join(__dirname, '/../../../../python-scripts'),
+    args: [type,
+      '-a', algorithm,
+      '-m', message,
+      '-k', key.toString()
+    ]
+  }
+  let pyshell = new PythonShell('main.py', options)
+
+  pyshell.on('stderr', function (stderr) {
+    console.log(stderr)
+  })
+  pyshell.on('message', function (msg) {
+    callback(msg)
+  })
+}
+
 const state = {
   key: null,
   algorithm: '',
@@ -80,9 +105,34 @@ const actions = {
   setAlgorithm ({ commit }, algorithm) {
     commit('SET_ALGORITHM', algorithm)
   },
-  // quickEncrypt({commit}, { key, algorithm,  }){
+  encryptAndSend ({ commit }, { key, algorithm, message, host }) {
+    let { PythonShell } = require('python-shell')
+    let path = require('path')
+    let options = {
+      pythonOptions: ['-u'],
+      pythonPath: '/usr/bin/python3.9',
+      scriptPath: path.join(__dirname, '/../../../../python-scripts'),
+      args: ['encrypt',
+        '-a', algorithm,
+        '-m', message,
+        '-k', key.toString()
+      ]
+    }
+    let pyshell = new PythonShell('main.py', options)
 
-  // }
+    pyshell.on('stderr', function (stderr) {
+      console.log(stderr)
+    })
+    pyshell.on('message', function (msg) {
+      axios.post('http://' + host + ':3000/encrypt', {
+        sender: 'adel',
+        algorithm: algorithm,
+        message: msg,
+        key: key,
+        type: 'encrypt'
+      })
+    })
+  },
   encrypt ({ state, commit }) {
     let { PythonShell } = require('python-shell')
     let path = require('path')
@@ -133,7 +183,49 @@ const actions = {
   },
 
   pushMessage ({ commit }, message) {
-    commit('ADD_MESSAGE', message)
+    callPython({
+      type: 'decrypt',
+      callback: function (msg) {
+        commit('ADD_MESSAGE', {
+          algorithm: message.algorithm,
+          message: message.message,
+          decryptedMessage: msg,
+          key: message.key,
+          sender: message.sender,
+          type: message.type
+        })
+      },
+      algorithm: message.algorithm,
+      message: message.message,
+      key: message.key
+    })
+    // let { PythonShell } = require('python-shell')
+    // let path = require('path')
+    // let options = {
+    //   pythonOptions: ['-u'],
+    //   pythonPath: '/usr/bin/python3.9',
+    //   scriptPath: path.join(__dirname, '/../../../../python-scripts'),
+    //   args: ['decrypt',
+    //     '-a', message.algorithm,
+    //     '-m', message.message,
+    //     '-k', message.key.toString()
+    //   ]
+    // }
+    // let pyshell = new PythonShell('main.py', options)
+
+    // pyshell.on('stderr', function (stderr) {
+    //   console.log(stderr)
+    // })
+    // pyshell.on('message', function (msg) {
+    //   commit('ADD_MESSAGE', {
+    //     algorithm: message.algorithm,
+    //     message: message.message,
+    //     decryptedMessage: msg,
+    //     key: message.key,
+    //     sender: message.sender,
+    //     type: message.type
+    //   })
+    // })
   },
   setHosts ({ commit }, hosts) {
     commit('SET_HOSTS', hosts)

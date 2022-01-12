@@ -12,11 +12,15 @@ function getIpV4 (req) {
   return tableSplit[tableSplit.length - 1]
 }
 
+// function validateMessage(msg) {
+//   if('')
+// }
+
 app.use(cors())
 app.use(express.json())
 
 let peers = [
-  { name: 'adel', ip: '10.42.0.1', active: true }
+  { name: 'Bouhraoua Adel', ip: '10.42.0.1', active: true }
 ]
 
 app.get('/', (req, res) => {

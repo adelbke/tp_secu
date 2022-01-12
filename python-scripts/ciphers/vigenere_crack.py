@@ -116,13 +116,12 @@ def getMostFrequent(letters:list):
 
 def crack_vigenere(crypt, key_length, user_limit=81):
 
-  crypt= 'kjh hukfy visgovf nkjh julf urxclokvgk us poxshkis ubvq otv qfk us wxpdngxs jkkwnk'
   encrypted_message = ''.join(crypt.split(' '))
 
   lettersList = groupSameShift(encrypted_message,key_length)
   frequencyOrders = [getMostFrequent(x) for x in lettersList]
 
-  max_chars = int((user_limit + 1)**(1/key_length))
+  max_chars = int(user_limit**(1/key_length)) + 1
   key_possibilities = []
   for order in frequencyOrders:
     french = AlphabetFrequency(classic=True)
@@ -130,16 +129,15 @@ def crack_vigenere(crypt, key_length, user_limit=81):
     key_chars = [chr(ord('a') + x[0]) for x in case.best_match_shift(french, matches_count=max_chars)]
     key_possibilities.append(key_chars)
 
-  # print(key_possibilities)
   # return
   possible_keys = []
+  
   iteration = product(*tuple(key_possibilities))
   probable_key = next(iteration, None)
   i = 0
   while i < user_limit and probable_key is not None:
     key = ''.join(probable_key)
     possible_keys.append({ "msg": VigenereCipher.decrypt(crypt, key), "key": key})
-    # possible_keys.append({ "key": key})
     probable_key = next(iteration, None)
     i+=1
   

@@ -10,6 +10,7 @@
         :key="index"
         :sender="msg.sender"
         :message="msg.message"
+        :decrypted-message="msg.decryptedMessage"
         :cryptKey="String(msg.key)"
         :algorithm="msg.algorithm"
       ></received-message>

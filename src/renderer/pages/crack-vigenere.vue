@@ -59,35 +59,67 @@
         <div
           class="
             grid grid-cols-1
-            gap-4
             bg-blue-800
+            shadow-inner
             rounded
             shadow-special
             border-blue-800
             text-gray-200
-            transition-transform
-            duration-100
-            ease-in
-            transform
-            hover:scale-105
             p-4
           "
         >
-          <label class="block-title text-xl font-bold">Messages possibles</label>
+          <div class="flex flex-row justify-between">
+            <label class="block-title text-xl font-bold"
+              >Messages possibles</label
+            >
+            <div>
+              <label for="" class="text-md font-normal text-gray-300">
+                {{ formattedOutput.length }} Results Generated
+              </label>
+
+              <button class="text-blue-500 underline" @click="clearList">
+                Clear list
+              </button>
+            </div>
+          </div>
+          <!-- <div class="flex flex-row"></div>
           <div
             v-for="possible in formattedOutput"
             :key="possible.key"
-            class="p-2 bg-blue-900 shadow-inner m-1 rounded flex flex-row justify-between"
+            class="
+              py-2
+              bg-blue-800
+              rounded
+              flex flex-row
+              justify-between
+            "
           >
             <div>
-              <span>Message: </span> 
+              <span>Message: </span>
               <span class="font-bold text-white" v-text="possible.msg"></span>
             </div>
             <div class="flex-initial">
-              <span>Key: </span> 
+              <span>Key: </span>
               <span class="font-bold text-white" v-text="possible.key"></span>
             </div>
-          </div>
+          </div> -->
+
+          <table class="table-auto mx-auto">
+            <thead>
+              <tr>
+                <th class="px-4 py-2">Rank</th>
+                <th class="px-4 py-2">Message</th>
+                <th class="px-4 py-2">Key</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(output, index) in formattedOutput" :key="index">
+                <td class="border px-4 py-2">{{ index + 1 }}</td>
+                <td class="border px-4 py-2">{{ output.msg }}</td>
+                <td class="border px-4 py-2">{{ output.key }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <!-- <crypt-output :output="formattedOutput" class="m-2"></crypt-output> -->
       </div>
@@ -104,15 +136,18 @@ export default {
     cryptOutput
   },
   methods: {
+    clearList () {
+      this.$store.dispatch('vigenere_crack/reset_state')
+    },
     start_crack () {
       // this.$store.dispatch(
-      //   'crypt/crack_vigenere',
+      //   'crypt/crack_vigenere',P
       //   this.keyLength + ' ' + this.resultsLimit
       // )
       this.$store.dispatch('vigenere_crack/decrypt', {
         key: this.keyLength + ' ' + this.resultsLimit,
         algorithm: 'crack_vigenere',
-        message: 'hello world'
+        msg: this.$store.getters['crypt/getMessage']
       })
     }
   },

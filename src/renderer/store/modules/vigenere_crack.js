@@ -1,5 +1,6 @@
 const state = {
-  crypt: ''
+  crypt: '',
+  message: ''
 }
 const getters = {
   getCrypt: state => state.crypt
@@ -11,7 +12,8 @@ const mutations = {
 }
 
 const actions = {
-  decrypt ({ commit } = null, { algorithm, key, message }) {
+  decrypt ({ commit, state } = null, { algorithm, key, msg }) {
+    commit('SET_CRYPT', '')
     let { PythonShell } = require('python-shell')
     let path = require('path')
     let options = {
@@ -20,7 +22,7 @@ const actions = {
       scriptPath: path.join(__dirname, '/../../../../python-scripts'),
       args: ['decrypt',
         '-a', algorithm,
-        '-m', message,
+        '-m', msg,
         '-k', key.toString()
       ]
     }
@@ -32,6 +34,9 @@ const actions = {
     pyshell.on('stderr', function (stderr) {
       console.log(stderr)
     })
+  },
+  reset_state ({ commit }) {
+    commit('SET_CRYPT', '')
   }
 }
 

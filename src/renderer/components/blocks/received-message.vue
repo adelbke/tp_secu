@@ -6,7 +6,7 @@
       >
     </div>
     <div class="block p-2 bg-blue-900 shadow-inner m-1 rounded">
-      <pre class="whitespace-pre-line">{{ message }}</pre>
+      <pre class="whitespace-pre-line">{{ !!decryptedMessage ? decryptedMessage : message }}</pre>
     </div>
     <div class="flex flex-row justify-between">
       <div>
@@ -15,6 +15,10 @@
         >
       </div>
       <div>
+        <!-- <small v-if="algorithm == 'substitution'">
+          Plain Alphabet: {{ cryptKey.plainAlphabet }}
+          Cipher Alphabet: {{ cryptKey.cipherAlphabet }}
+        </small> -->
         <small class="text-sm"
           >Key: <strong>{{ cryptKey }}</strong></small
         >
@@ -31,6 +35,7 @@ export default {
       default: 'myself'
     },
     message: String,
+    decryptedMessage: String,
     cryptKey: String,
     algorithm: String
   }

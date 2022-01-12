@@ -58,7 +58,13 @@ export default {
   },
   computed: {
     outputKey () {
-      return this.plainAlphabet + ' ' + this.cipherAlphabet
+      return {
+        plainAlphabet: this.plainAlphabet,
+        cipherAlphabet: this.cipherAlphabet,
+        toString () {
+          return this.plainAlphabet + ' ' + this.cipherAlphabet
+        }
+      }
     },
     cipherAlphabetErrors () {
       let vm = this

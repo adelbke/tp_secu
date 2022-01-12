@@ -11,7 +11,7 @@
         <label class="block" for="">Select a Recipient:</label>
         <div class="flex flex-row">
           <select
-            v-model="selectedHost"  
+            v-model="selectedHost"
             class="
               bg-blue-900
               p-2
@@ -23,11 +23,7 @@
               border-indigo-900
             "
           >
-            <option
-              selected
-              disabled
-              class="text-gray-500 text-lg"
-            >
+            <option selected disabled class="text-gray-500 text-lg">
               Please select a Recipient
             </option>
             <option
@@ -38,9 +34,9 @@
               v-text="`${host.name} - ${host.ip}`"
             ></option>
           </select>
-          <button class="button-main" @click="refresh">
+          <!-- <button class="button-main" @click="refresh">
             <refresh-icon></refresh-icon>
-          </button>
+          </button> -->
         </div>
       </div>
       <div>
@@ -75,7 +71,6 @@
 <script>
 import refreshIcon from '../icons/refresh.vue'
 import algoInputForm from './algo-input-form.vue'
-import axios from 'axios'
 export default {
   components: {
     refreshIcon,
@@ -89,17 +84,18 @@ export default {
       let vm = this
       let { algorithm, cryptKey } = vm.algoKeyData
 
-      // this.$store.dispatch('crypt/setKey', cryptKey)
-      // this.$store.dispatch('crypt/setAlgorithm', algorithm)
-      // this.$store.dispatch('crypt/setMessage', vm.message)
-      // this.$store.dispatch('crypt/encrypt')
-
-      await axios.post('http://' + this.selectedHost.ip + ':3000/encrypt', {
-        sender: 'adel',
-        algorithm: algorithm,
-        message: this.$store.getters['crypt/getCrypt'],
+      // await axios.post('http://' + this.selectedHost.ip + ':3000/encrypt', {
+      //   sender: 'adel',
+      //   algorithm: algorithm,
+      //   message: this.message,
+      //   key: cryptKey,
+      //   type: 'encrypt'
+      // })
+      this.$store.dispatch('crypt/encryptAndSend', {
         key: cryptKey,
-        type: 'encrypt'
+        algorithm,
+        message: this.message,
+        host: this.selectedHost.ip
       })
     }
   },
@@ -116,6 +112,7 @@ export default {
   computed: {
     hosts () {
       return this.$store.getters['crypt/getHosts']
+      // return [{ ip: 'localhost', mac: 'AC:CF:23:31:9B:FC', name: 'localhost' }]
     },
     algoKey: {
       get () {
